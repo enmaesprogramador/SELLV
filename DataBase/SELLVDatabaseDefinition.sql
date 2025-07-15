@@ -17,12 +17,15 @@
  **********************************************************************************************/
 
 
+-- TASK: Crear tabla de clientes.
+
 -- ESQUEMA DE LOS PRODUCTOS (Borrador).
 CREATE TABLE WareHouse
 (
 	Id INT PRIMARY KEY IDENTITY(1,1),
 	[Name] NVARCHAR (100) NOT NULL,
 	[Location] NVARCHAR(255),
+	IsActive BIT,
 	CreatedBy NVARCHAR(100),
 	UpdatedBy NVARCHAR(100),
 	UpdatedAt DATETIME,
@@ -45,7 +48,7 @@ CREATE TABLE ProductSubCategory
 	Id INT PRIMARY KEY IDENTITY(1,1),
 	[Name] NVARCHAR(100) NOT NULL,
 	[Description] NVARCHAR(255),
-	ParentCategoryId INT NOT NULL,
+	ProducttCategoryId INT NOT NULL,
 	FOREIGN KEY (ParentCategoryId) REFERENCES ProductCategory(Id),
 	CreatedBy NVARCHAR(100),
 	UpdatedBy NVARCHAR(100),
@@ -73,7 +76,8 @@ CREATE TABLE [Product]
 	Price DECIMAL NOT NULL,
 	BarCode NVARCHAR(120) UNIQUE,
 	CategoryId INT NOT NULL,
-	MeasurementId INT NOT NULL
+	MeasurementId INT NOT NULL,
+	IsActive BIT,
 	FOREIGN KEY (CategoryId) REFERENCES ProductCategory(Id),
 	FOREIGN KEY (MeasurementId) REFERENCES Measurement(Id),
 	CreatedBy NVARCHAR(100),
@@ -109,18 +113,22 @@ CREATE TABLE InvoiceHeader
 	GeneralAmount DECIMAL,
 	UserId INT,
 	[Status] NVARCHAR(50),
-	ClientId INT,
+	CustomerId INT,
 	ClientRnc NVARCHAR(50),
 	ClientName NVARCHAR(100),
-	CajaId INT,
+	CashBoxId INT,
 	SucursalId INT,
+	FOREIGN KEY (PaymentMethodId) REFERENCES PaymentMethod(Id),
+	FOREIGN KEY (CashBoxId) REFERENCES CashBox(Id),
+	FOREIGN KEY (UserId) REFERENCES Users(Id),
+	FOREIGN KEY (CustomerId) REFERENCES Customer(Id),
 	CreatedBy NVARCHAR(100),
 	UpdatedBy NVARCHAR(100),
 	UpdatedAt DATETIME,
 	CreatedAt DATETIME
 )
 
-CREATE TABLE InvoiceDetails
+CREATE TABLE InvoiceDetail
 (
 	Id INT PRIMARY KEY IDENTITY (1,1),
 	ProductId INT,
@@ -133,6 +141,9 @@ CREATE TABLE InvoiceDetails
 	Discount DECIMAL,
 	TotalDiscount DECIMAL,
 	ItbisTotal DECIMAL,
+	FOREIGN KEY (ProductId) REFERENCES Product(Id),
+	FOREIGN KEY (InvoiceHeaderId) REFERENCES InvoiceHeader(Id),
+	FOREIGN KEY (ItbisId) REFERENCES Itbis(Id)
 )
 
 CREATE TABLE PaymentMethod
