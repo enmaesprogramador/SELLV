@@ -1,12 +1,20 @@
-/*
-	Tablas necesarias para el POS:
-	Metodos de pago
-	Tabla de ITBIS
-	Tabla de movimientos
-	Tabla de cajas
-	Tabla de Roles
-	Tabla mucho a muchos para los metodos de pago
-*/
+/**********************************************************************************************
+ *                                                                                            
+ *   ███████╗███████╗██╗     ██╗     ██╗   ██╗                                                 
+ *   ██╔════╝██╔════╝██║     ██║     ██║   ██║                                                 
+ *   ███████╗███████╗██║     ██║     ██║   ██║                                                 
+ *   ╚════██║██╔═══╝ ██║     ██║     ██║   ██║                                                 
+ *   ███████║███████╗███████╗███████╗╚██████╔╝                                                 
+ *   ╚══════╝╚══════╝╚══════╝╚══════╝ ╚═════╝                                                  
+ *                                                                                            
+ *     S E L L V    -    El mejor sistema de ventas                                            
+ *                                                                                            
+ *     Autor     : [Carlos E. Nuñez, Tanisha Maria]                                                      
+ *     Versión   : 1.0                                                                         
+ *     Fecha     : [2025-07-15]                                                               
+ *     Descripción: Script SQL para definición de tablas del sistema POS (ventas y caja)       
+ *                                                                                            
+ **********************************************************************************************/
 
 
 -- ESQUEMA DE LOS PRODUCTOS (Borrador).
@@ -126,3 +134,108 @@ CREATE TABLE InvoiceDetails
 	TotalDiscount DECIMAL,
 	ItbisTotal DECIMAL,
 )
+
+CREATE TABLE PaymentMethod
+(
+	Id INT PRIMARY KEY IDENTITY (1,1),
+	[Name] NVARCHAR(100) NOT NULL,
+	[Description] NVARCHAR(255),
+	CreatedBy NVARCHAR(100),
+	UpdatedBy NVARCHAR(100),
+	UpdatedAt DATETIME,
+	CreatedAt DATETIME
+)
+
+CREATE TABLE PaymentMethodInvoiceHeader
+(
+	Id INT PRIMARY KEY IDENTITY (1,1),
+	PaymentMethodId INT NOT NULL,
+	InvoiceHeaderId INT NOT NULL,
+	Amount DECIMAL NOT NULL,
+	FOREIGN KEY (PaymentMethodId) REFERENCES PaymentMethod(Id),
+	FOREIGN KEY (InvoiceHeaderId) REFERENCES InvoiceHeader(Id),
+	CreatedBy NVARCHAR(100),
+	UpdatedBy NVARCHAR(100),
+	UpdatedAt DATETIME,
+	CreatedAt DATETIME
+)
+
+CREATE TABLE Itbis
+(
+	Id INT PRIMARY KEY IDENTITY (1,1),
+	[Name] NVARCHAR(100) NOT NULL,
+	[Description] NVARCHAR(255),
+	[Percentage] DECIMAL NOT NULL,
+	CreatedBy NVARCHAR(100),
+	UpdatedBy NVARCHAR(100),
+	UpdatedAt DATETIME,
+	CreatedAt DATETIME
+)
+
+CREATE TABLE CashBox
+(
+	Id INT PRIMARY KEY IDENTITY (1,1),
+	[Name] NVARCHAR(100) NOT NULL,
+	[Description] NVARCHAR(255),
+	CreatedBy NVARCHAR(100),
+	UpdatedBy NVARCHAR(100),
+	UpdatedAt DATETIME,
+	CreatedAt DATETIME
+)
+
+CREATE TABLE WareHouseMovement
+(
+	Id INT PRIMARY KEY IDENTITY (1,1),
+	WareHouseId INT NOT NULL,
+	ToWareHouseId INT,
+	MovementDate DATETIME NOT NULL,
+	MovementType NVARCHAR(50) NOT NULL,
+	Description NVARCHAR(255),
+	Qty DECIMAL NOT NULL,
+	ProductId INT NOT NULL,
+	CreatedBy NVARCHAR(100),
+	UpdatedBy NVARCHAR(100),
+	UpdatedAt DATETIME,
+	CreatedAt DATETIME,
+	FOREIGN KEY (WareHouseId) REFERENCES WareHouse(Id),
+	FOREIGN KEY (ProductId) REFERENCES [Product](Id)
+)
+
+CREATE TABLE CashRegister
+(
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    [Name] NVARCHAR(100) NOT NULL,
+    [Location] NVARCHAR(255),
+    IsActive BIT NOT NULL DEFAULT 1
+);
+
+CREATE TABLE CashRegisterSession
+(
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    CashRegisterId INT NOT NULL,
+    OpenedBy INT NOT NULL,
+    ClosedBy INT NOT NULL,
+    OpeningAmount DECIMAL(10,2) NOT NULL,
+    ClosingAmount DECIMAL(10,2),
+    OpeningTime DATETIME NOT NULL DEFAULT GETDATE(),
+    ClosingTime DATETIME,
+    [Status] NVARCHAR(20) NOT NULL DEFAULT 'OPEN',
+    Observations NVARCHAR(MAX),
+    FOREIGN KEY (CashRegisterId) REFERENCES CashRegister(Id),
+	FOREIGN KEY (OpenedBy) REFERENCES Users(Id),
+	FOREIGN KEY (ClosedBy) REFERENCES Users(Id)
+);
+
+CREATE TABLE CashMovement
+(
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    CashRegisterSessionId INT NOT NULL,
+    MovementType NVARCHAR(20) NOT NULL,
+    Amount DECIMAL(10,2) NOT NULL,
+    [Description] NVARCHAR(255),
+    RelatedInvoiceId INT, -- Nullable, si viene de una venta
+    CreatedBy NVARCHAR(100),
+    CreatedAt DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (CashRegisterSessionId) REFERENCES CashRegisterSession(Id),
+    FOREIGN KEY (RelatedInvoiceId) REFERENCES InvoiceHeader(Id)
+);
