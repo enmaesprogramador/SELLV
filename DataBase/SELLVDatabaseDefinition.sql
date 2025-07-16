@@ -19,6 +19,17 @@
 
 -- TASK: Crear tabla de clientes.
 
+CREATE TABLE Permission
+(
+	Id INT PRIMARY KEY IDENTITY(1,1),
+	[Name] NVARCHAR(100),
+	CreatedBy NVARCHAR(100),
+	UpdatedBy NVARCHAR(100),
+	UpdatedAt DATETIME,
+	CreatedAt DATETIME DEFAULT GETDATE(),
+)
+
+
 -- ESQUEMA DE LOS PRODUCTOS (Borrador).
 CREATE TABLE WareHouse
 (
@@ -29,7 +40,7 @@ CREATE TABLE WareHouse
 	CreatedBy NVARCHAR(100),
 	UpdatedBy NVARCHAR(100),
 	UpdatedAt DATETIME,
-	CreatedAt DATETIME
+	CreatedAt DATETIME DEFAULT GETDATE(),
 )
 
 CREATE TABLE ProductCategory
@@ -40,7 +51,7 @@ CREATE TABLE ProductCategory
 	CreatedBy NVARCHAR(100),
 	UpdatedBy NVARCHAR(100),
 	UpdatedAt DATETIME,
-	CreatedAt DATETIME
+	CreatedAt DATETIME DEFAULT GETDATE(),
 )
 
 CREATE TABLE ProductSubCategory
@@ -49,11 +60,11 @@ CREATE TABLE ProductSubCategory
 	[Name] NVARCHAR(100) NOT NULL,
 	[Description] NVARCHAR(255),
 	ProducttCategoryId INT NOT NULL,
-	FOREIGN KEY (ParentCategoryId) REFERENCES ProductCategory(Id),
+	FOREIGN KEY (ProducttCategoryId) REFERENCES ProductCategory(Id),
 	CreatedBy NVARCHAR(100),
 	UpdatedBy NVARCHAR(100),
 	UpdatedAt DATETIME,
-	CreatedAt DATETIME
+	CreatedAt DATETIME DEFAULT GETDATE(),
 )
 
 CREATE TABLE Measurement
@@ -64,7 +75,7 @@ CREATE TABLE Measurement
 	CreatedBy NVARCHAR(100),
 	UpdatedBy NVARCHAR(100),
 	UpdatedAt DATETIME,
-	CreatedAt DATETIME
+	CreatedAt DATETIME DEFAULT GETDATE(),
 )
 
 CREATE TABLE [Product]
@@ -83,7 +94,7 @@ CREATE TABLE [Product]
 	CreatedBy NVARCHAR(100),
 	UpdatedBy NVARCHAR(100),
 	UpdatedAt DATETIME,
-	CreatedAt DATETIME
+	CreatedAt DATETIME DEFAULT GETDATE(),
 )
 
 CREATE TABLE [Stock]
@@ -97,11 +108,45 @@ CREATE TABLE [Stock]
 	CreatedBy NVARCHAR(100),
 	UpdatedBy NVARCHAR(100),
 	UpdatedAt DATETIME,
-	CreatedAt DATETIME
+	CreatedAt DATETIME DEFAULT GETDATE(),
 )
 
 
 -- SALES:
+
+CREATE TABLE PaymentMethod
+(
+	Id INT PRIMARY KEY IDENTITY (1,1),
+	[Name] NVARCHAR(100) NOT NULL,
+	[Description] NVARCHAR(255),
+	CreatedBy NVARCHAR(100),
+	UpdatedBy NVARCHAR(100),
+	UpdatedAt DATETIME,
+	CreatedAt DATETIME DEFAULT GETDATE(),
+)
+
+CREATE TABLE Itbis
+(
+	Id INT PRIMARY KEY IDENTITY (1,1),
+	[Name] NVARCHAR(100) NOT NULL,
+	[Description] NVARCHAR(255),
+	[Percentage] DECIMAL NOT NULL,
+	CreatedBy NVARCHAR(100),
+	UpdatedBy NVARCHAR(100),
+	UpdatedAt DATETIME,
+	CreatedAt DATETIME DEFAULT GETDATE(),
+)
+
+CREATE TABLE CashBox
+(
+	Id INT PRIMARY KEY IDENTITY (1,1),
+	[Name] NVARCHAR(100) NOT NULL,
+	[Description] NVARCHAR(255),
+	CreatedBy NVARCHAR(100),
+	UpdatedBy NVARCHAR(100),
+	UpdatedAt DATETIME,
+	CreatedAt DATETIME DEFAULT GETDATE(),
+)
 
 CREATE TABLE InvoiceHeader
 (
@@ -116,16 +161,16 @@ CREATE TABLE InvoiceHeader
 	CustomerId INT,
 	ClientRnc NVARCHAR(50),
 	ClientName NVARCHAR(100),
-	CashBoxId INT,
+	CashRegisterSessionId INT,
 	SucursalId INT,
 	FOREIGN KEY (PaymentMethodId) REFERENCES PaymentMethod(Id),
-	FOREIGN KEY (CashBoxId) REFERENCES CashBox(Id),
-	FOREIGN KEY (UserId) REFERENCES Users(Id),
+	FOREIGN KEY (CashRegisterSessionId) REFERENCES CashRegisterSession(Id),
+	FOREIGN KEY (UserId) REFERENCES User(Id),
 	FOREIGN KEY (CustomerId) REFERENCES Customer(Id),
 	CreatedBy NVARCHAR(100),
 	UpdatedBy NVARCHAR(100),
 	UpdatedAt DATETIME,
-	CreatedAt DATETIME
+	CreatedAt DATETIME DEFAULT GETDATE(),
 )
 
 CREATE TABLE InvoiceDetail
@@ -146,54 +191,6 @@ CREATE TABLE InvoiceDetail
 	FOREIGN KEY (ItbisId) REFERENCES Itbis(Id)
 )
 
-CREATE TABLE PaymentMethod
-(
-	Id INT PRIMARY KEY IDENTITY (1,1),
-	[Name] NVARCHAR(100) NOT NULL,
-	[Description] NVARCHAR(255),
-	CreatedBy NVARCHAR(100),
-	UpdatedBy NVARCHAR(100),
-	UpdatedAt DATETIME,
-	CreatedAt DATETIME
-)
-
-CREATE TABLE PaymentMethodInvoiceHeader
-(
-	Id INT PRIMARY KEY IDENTITY (1,1),
-	PaymentMethodId INT NOT NULL,
-	InvoiceHeaderId INT NOT NULL,
-	Amount DECIMAL NOT NULL,
-	FOREIGN KEY (PaymentMethodId) REFERENCES PaymentMethod(Id),
-	FOREIGN KEY (InvoiceHeaderId) REFERENCES InvoiceHeader(Id),
-	CreatedBy NVARCHAR(100),
-	UpdatedBy NVARCHAR(100),
-	UpdatedAt DATETIME,
-	CreatedAt DATETIME
-)
-
-CREATE TABLE Itbis
-(
-	Id INT PRIMARY KEY IDENTITY (1,1),
-	[Name] NVARCHAR(100) NOT NULL,
-	[Description] NVARCHAR(255),
-	[Percentage] DECIMAL NOT NULL,
-	CreatedBy NVARCHAR(100),
-	UpdatedBy NVARCHAR(100),
-	UpdatedAt DATETIME,
-	CreatedAt DATETIME
-)
-
-CREATE TABLE CashBox
-(
-	Id INT PRIMARY KEY IDENTITY (1,1),
-	[Name] NVARCHAR(100) NOT NULL,
-	[Description] NVARCHAR(255),
-	CreatedBy NVARCHAR(100),
-	UpdatedBy NVARCHAR(100),
-	UpdatedAt DATETIME,
-	CreatedAt DATETIME
-)
-
 CREATE TABLE WareHouseMovement
 (
 	Id INT PRIMARY KEY IDENTITY (1,1),
@@ -207,7 +204,7 @@ CREATE TABLE WareHouseMovement
 	CreatedBy NVARCHAR(100),
 	UpdatedBy NVARCHAR(100),
 	UpdatedAt DATETIME,
-	CreatedAt DATETIME,
+	CreatedAt DATETIME DEFAULT GETDATE(),
 	FOREIGN KEY (WareHouseId) REFERENCES WareHouse(Id),
 	FOREIGN KEY (ProductId) REFERENCES [Product](Id)
 )
@@ -224,18 +221,33 @@ CREATE TABLE CashRegisterSession
 (
     Id INT PRIMARY KEY IDENTITY(1,1),
     CashRegisterId INT NOT NULL,
-    OpenedBy INT NOT NULL,
-    ClosedBy INT NOT NULL,
+    OpenedBy NVARCHAR NOT NULL,
+    ClosedBy NVARCHAR NOT NULL,
     OpeningAmount DECIMAL(10,2) NOT NULL,
     ClosingAmount DECIMAL(10,2),
     OpeningTime DATETIME NOT NULL DEFAULT GETDATE(),
     ClosingTime DATETIME,
-    [Status] NVARCHAR(20) NOT NULL DEFAULT 'OPEN',
+    [Open] BIT,
     Observations NVARCHAR(MAX),
-    FOREIGN KEY (CashRegisterId) REFERENCES CashRegister(Id),
-	FOREIGN KEY (OpenedBy) REFERENCES Users(Id),
-	FOREIGN KEY (ClosedBy) REFERENCES Users(Id)
+    FOREIGN KEY (CashRegisterId) REFERENCES CashRegister(Id)
 );
+
+
+CREATE TABLE PaymentMethodInvoiceHeader
+(
+	Id INT PRIMARY KEY IDENTITY (1,1),
+	PaymentMethodId INT NOT NULL,
+	InvoiceHeaderId INT NOT NULL,
+	CashRegisterSessionId INT,
+	Amount DECIMAL NOT NULL,
+	FOREIGN KEY (PaymentMethodId) REFERENCES PaymentMethod(Id),
+	FOREIGN KEY (InvoiceHeaderId) REFERENCES InvoiceHeader(Id),
+	FOREIGN KEY (CashRegisterSessionId) REFERENCES CashRegisterSession(Id),
+	CreatedBy NVARCHAR(100),
+	UpdatedBy NVARCHAR(100),
+	UpdatedAt DATETIME,
+	CreatedAt DATETIME DEFAULT GETDATE(),
+)
 
 CREATE TABLE CashMovement
 (
