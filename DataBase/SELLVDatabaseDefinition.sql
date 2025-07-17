@@ -16,9 +16,6 @@
  *                                                                                            
  **********************************************************************************************/
 
-
--- TASK: Crear tabla de clientes.
-
 CREATE TABLE Permission
 (
 	Id INT PRIMARY KEY IDENTITY(1,1),
@@ -26,9 +23,21 @@ CREATE TABLE Permission
 	CreatedBy NVARCHAR(100),
 	UpdatedBy NVARCHAR(100),
 	UpdatedAt DATETIME,
-	CreatedAt DATETIME DEFAULT GETDATE(),
+	CreatedAt DATETIME DEFAULT GETDATE()
 )
 
+CREATE TABLE UsersPermissions
+(
+	UserId INT,
+	PermissionId INT,
+	CreatedBy NVARCHAR(150),
+	CratedAt DATETIME DEFAULT GETDATE(),
+	UpdatedBy DATETIME,
+	UpdatedAt DATETIME,
+	PRIMARY KEY(UserId, PermissionId),
+	FOREIGN KEY (UserId) REFERENCES [User](Id),
+	FOREIGN KEY (PermissionId) REFERENCES Permission(Id)
+)
 
 -- ESQUEMA DE LOS PRODUCTOS (Borrador).
 CREATE TABLE WareHouse
@@ -37,10 +46,12 @@ CREATE TABLE WareHouse
 	[Name] NVARCHAR (100) NOT NULL,
 	[Location] NVARCHAR(255),
 	IsActive BIT,
+	MinStock DECIMAL,
+	MaxStock DECIMAL,
 	CreatedBy NVARCHAR(100),
 	UpdatedBy NVARCHAR(100),
 	UpdatedAt DATETIME,
-	CreatedAt DATETIME DEFAULT GETDATE(),
+	CreatedAt DATETIME DEFAULT GETDATE()
 )
 
 CREATE TABLE ProductCategory
@@ -51,7 +62,7 @@ CREATE TABLE ProductCategory
 	CreatedBy NVARCHAR(100),
 	UpdatedBy NVARCHAR(100),
 	UpdatedAt DATETIME,
-	CreatedAt DATETIME DEFAULT GETDATE(),
+	CreatedAt DATETIME DEFAULT GETDATE()
 )
 
 CREATE TABLE ProductSubCategory
@@ -59,8 +70,8 @@ CREATE TABLE ProductSubCategory
 	Id INT PRIMARY KEY IDENTITY(1,1),
 	[Name] NVARCHAR(100) NOT NULL,
 	[Description] NVARCHAR(255),
-	ProducttCategoryId INT NOT NULL,
-	FOREIGN KEY (ProducttCategoryId) REFERENCES ProductCategory(Id),
+	ProductCategoryId INT NOT NULL,
+	FOREIGN KEY (ProductCategoryId) REFERENCES ProductCategory(Id),
 	CreatedBy NVARCHAR(100),
 	UpdatedBy NVARCHAR(100),
 	UpdatedAt DATETIME,
@@ -111,8 +122,6 @@ CREATE TABLE [Stock]
 	CreatedAt DATETIME DEFAULT GETDATE(),
 )
 
-
--- SALES:
 
 CREATE TABLE PaymentMethod
 (
@@ -165,13 +174,29 @@ CREATE TABLE InvoiceHeader
 	SucursalId INT,
 	FOREIGN KEY (PaymentMethodId) REFERENCES PaymentMethod(Id),
 	FOREIGN KEY (CashRegisterSessionId) REFERENCES CashRegisterSession(Id),
-	FOREIGN KEY (UserId) REFERENCES User(Id),
+	FOREIGN KEY (UserId) REFERENCES [User](Id),
 	FOREIGN KEY (CustomerId) REFERENCES Customer(Id),
 	CreatedBy NVARCHAR(100),
 	UpdatedBy NVARCHAR(100),
 	UpdatedAt DATETIME,
-	CreatedAt DATETIME DEFAULT GETDATE(),
+	CreatedAt DATETIME DEFAULT GETDATE()
 )
+
+
+CREATE TABLE Customer
+(
+	Id INT PRIMARY KEY IDENTITY(1,1),
+	[Name] NVARCHAR(100),
+	Phone NVARCHAR(100),
+	[Address] NVARCHAR(255),
+	EmailAddress NVARCHAR(100),
+	InvoiceHeaderId INT,
+	FOREIGN KEY (InvoiceHeaderId) REFERENCES InvoiceHeader(Id),
+	CreatedBy NVARCHAR(100),
+	UpdatedBy NVARCHAR(100),
+	UpdatedAt DATETIME,
+	CreatedAt DATETIME DEFAULT GETDATE()
+) 
 
 CREATE TABLE InvoiceDetail
 (
