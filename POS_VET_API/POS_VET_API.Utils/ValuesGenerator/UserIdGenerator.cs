@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace POS_VET_API.Utils.ValuesGenerator
 {
-    public class UserNameGenerator : ValueGenerator<string>
+    public class UserIdGenerator : ValueGenerator<string>
     {
         public override bool GeneratesTemporaryValues =>
             false;

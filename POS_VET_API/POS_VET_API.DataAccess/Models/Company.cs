@@ -2,6 +2,7 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace POS_VET_API.DataAccess.Models;
 
@@ -33,56 +34,56 @@ public partial class Company
     public int? CreatedBy { get; set; }
 
     public int? UpdatedBy { get; set; }
-
+    [JsonIgnore]
     public virtual ICollection<Barcode> Barcodes { get; set; } = new List<Barcode>();
-
+    [JsonIgnore]
     public virtual ICollection<CashMovement> CashMovements { get; set; } = new List<CashMovement>();
-
+    [JsonIgnore]
     public virtual ICollection<CashRegisterSession> CashRegisterSessions { get; set; } = new List<CashRegisterSession>();
-
+    [JsonIgnore]
     public virtual ICollection<CashRegister> CashRegisters { get; set; } = new List<CashRegister>();
-
+    [JsonIgnore]
     public virtual User CreatedByNavigation { get; set; }
-
+    [JsonIgnore]
     public virtual ICollection<Customer> Customers { get; set; } = new List<Customer>();
-
+    [JsonIgnore]
     public virtual ICollection<InvoicesDetail> InvoicesDetails { get; set; } = new List<InvoicesDetail>();
-
+    [JsonIgnore]
     public virtual ICollection<InvoicesHeader> InvoicesHeaders { get; set; } = new List<InvoicesHeader>();
-
+    [JsonIgnore]
     public virtual ICollection<Measurement> Measurements { get; set; } = new List<Measurement>();
-
+    [JsonIgnore]
     public virtual ICollection<PaymentMethod> PaymentMethods { get; set; } = new List<PaymentMethod>();
-
+    [JsonIgnore]
     public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
-
+    [JsonIgnore]
     public virtual ICollection<Permission> Permissions { get; set; } = new List<Permission>();
-
+    [JsonIgnore]
     public virtual ICollection<Product> Products { get; set; } = new List<Product>();
-
+    [JsonIgnore]
     public virtual ICollection<ProductsCategory> ProductsCategories { get; set; } = new List<ProductsCategory>();
-
+    [JsonIgnore]
     public virtual ICollection<ProductsSubCategory> ProductsSubCategories { get; set; } = new List<ProductsSubCategory>();
-
+    [JsonIgnore]
     public virtual ICollection<RolePermission> RolePermissions { get; set; } = new List<RolePermission>();
-
+    [JsonIgnore]
     public virtual ICollection<Role> Roles { get; set; } = new List<Role>();
-
+    [JsonIgnore]
     public virtual ICollection<Stock> Stocks { get; set; } = new List<Stock>();
-
+    [JsonIgnore]
     public virtual ICollection<Taxe> Taxes { get; set; } = new List<Taxe>();
-
+    [JsonIgnore]
     public virtual User UpdatedByNavigation { get; set; }
-
+    [JsonIgnore]
     public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
-
+    [JsonIgnore]
     public virtual ICollection<User> Users { get; set; } = new List<User>();
-
+    [JsonIgnore]
     public virtual ICollection<WareHouse> WareHouses { get; set; } = new List<WareHouse>();
-
+    [JsonIgnore]
     public virtual ICollection<WareHouseEntrance> WareHousesEntrances { get; set; } = new List<WareHouseEntrance>();
-
+    [JsonIgnore]
     public virtual ICollection<WareHouseExit> WareHousesExits { get; set; } = new List<WareHouseExit>();
-
+    [JsonIgnore]
     public virtual ICollection<WareHouseTransfer> WareHousesTransfers { get; set; } = new List<WareHouseTransfer>();
 }

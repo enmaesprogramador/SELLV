@@ -65,7 +65,8 @@ builder.Services.AddCors((options) =>
 });
 
 builder.Services.AddExceptionHandler<GlobalExceptionHandlerMiddleware>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>()
+                .AddScoped<ICompanyRepository, CompanyRepository>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddProblemDetails();
 
