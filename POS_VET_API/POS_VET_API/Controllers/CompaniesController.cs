@@ -19,20 +19,20 @@ namespace POS_VET_API.Controllers
             _companyRepository = companyRepository;
         }
 
-        [HttpGet, Authorize]
+        [HttpGet]
         public ActionResult<ResultPattern<Paging<Company>>> GetCompanies([FromQuery] GridifyQuery query)
             => Ok(_companyRepository.GetAll(query));
 
 
-        [HttpGet("{id:int}"), Authorize]
+        [HttpGet("{id:int}")]
         public ActionResult<ResultPattern<Paging<Company>>> GetCompany(int id)
             => Ok(_companyRepository.Get(x => x.Id == id));
 
-        [HttpPost, Authorize]
+        [HttpPost]
         public ActionResult<ResultPattern<Paging<Company>>> CreateCompany([FromBody] Company company)
             => Created(string.Empty, _companyRepository.Post(company));
 
-        [HttpPut, Authorize]
+        [HttpPut]
         public ActionResult<ResultPattern<Paging<Company>>> UpdateCompany(int id, [FromBody] Company company)
             => Ok(_companyRepository.Update(x => x.Id == id, company));
         

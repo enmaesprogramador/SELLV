@@ -3,6 +3,10 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
+using Microsoft.EntityFrameworkCore.Metadata;
+using POS_VET_API.Utils.ValuesGenerator;
 
 namespace POS_VET_API.DataAccess.Models;
 
@@ -15,6 +19,41 @@ public partial class SELLVDBContext : DbContext
     public SELLVDBContext(DbContextOptions<SELLVDBContext> options)
         : base(options)
     {
+        SavingChanges += FUEL_DISPATCH_DBContext_SavingChanges;
+    }
+
+    private static void GenerateOnUpdate(EntityEntry entry)
+    {
+        foreach (var property in entry.Properties)
+        {
+            if (!(property.Metadata.ValueGenerated == ValueGenerated.OnUpdateSometimes ||
+                property.Metadata.ValueGenerated == ValueGenerated.OnUpdate ||
+                property.Metadata.ValueGenerated == ValueGenerated.OnAddOrUpdate))
+                continue;
+
+            var valueGeneratorFactory = property.Metadata.GetValueGeneratorFactory();
+
+            if (valueGeneratorFactory == null)
+                continue;
+
+            property.CurrentValue =
+                valueGeneratorFactory.
+                Invoke(property.Metadata,
+                entry.Metadata)
+                .Next(entry);
+        }
+    }
+    private void FUEL_DISPATCH_DBContext_SavingChanges(object? sender, SavingChangesEventArgs e)
+    {
+        var changes = ChangeTracker
+            .Entries()
+            .ToList();
+
+        changes.ForEach(e =>
+        {
+            if (e.State == EntityState.Modified || e.State == EntityState.Added)
+                GenerateOnUpdate(e);
+        });
     }
 
     public virtual DbSet<Barcode> Barcodes { get; set; }
@@ -69,9 +108,9 @@ public partial class SELLVDBContext : DbContext
 
     public virtual DbSet<WareHouseTransfer> WareHousesTransfers { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Data Source=ENMANUEL;Initial Catalog=SELLVDB;Persist Security Info=True;User ID=sa;Password=B1Admin@;Encrypt=True");
+//    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+//        => optionsBuilder.UseSqlServer("Data Source=ENMANUEL;Initial Catalog=SELLVDB;Persist Security Info=True;User ID=sa;Password=B1Admin@;Encrypt=True");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -434,9 +473,22 @@ public partial class SELLVDBContext : DbContext
             entity.Property(e => e.Code)
                 .IsRequired()
                 .HasMaxLength(150);
+
+            entity.Property(x => x.CreatedBy)
+                  .ValueGeneratedOnAdd()
+                  .HasValueGenerator<UserIdGenerator>()
+                  .Metadata.SetBeforeSaveBehavior(PropertySaveBehavior.Save);
+
+
+            entity.Property(x => x.CreatedBy)
+                  .ValueGeneratedOnUpdate()
+                  .HasValueGenerator<UserIdGenerator>()
+                  .Metadata.SetBeforeSaveBehavior(PropertySaveBehavior.Save);
+
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
+
             entity.Property(e => e.Name)
                 .IsRequired()
                 .HasMaxLength(150);
@@ -453,14 +505,16 @@ public partial class SELLVDBContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Products__Compan__6754599E");
 
-            entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.ProductCreatedByNavigations)
-                .HasForeignKey(d => d.CreatedBy)
-                .HasConstraintName("FK__Products__Create__693CA210");
+            entity.HasOne(d => d.CreatedByNavigation)
+            .WithMany(p => p.ProductCreatedByNavigations)    
+            .HasForeignKey(d => d.CreatedBy);
+
+      
 
             entity.HasOne(d => d.Measurement).WithMany(p => p.Products)
-                .HasForeignKey(d => d.MeasurementId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Products__Measur__66603565");
+                  .HasForeignKey(d => d.MeasurementId)
+                  .OnDelete(DeleteBehavior.ClientSetNull)
+                  .HasConstraintName("FK__Products__Measur__66603565");
 
             entity.HasOne(d => d.UpdatedByNavigation).WithMany(p => p.ProductUpdatedByNavigations)
                 .HasForeignKey(d => d.UpdatedBy)
@@ -479,6 +533,17 @@ public partial class SELLVDBContext : DbContext
                 .IsRequired()
                 .HasMaxLength(100);
             entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
+
+
+            entity.Property(x => x.CreatedBy)
+                  .HasValueGenerator<UserIdGenerator>()
+                  .ValueGeneratedOnAdd()
+                  .Metadata.SetBeforeSaveBehavior(PropertySaveBehavior.Save);
+
+            entity.Property(x => x.UpdatedBy)
+                  .HasValueGenerator<UserIdGenerator>()
+                  .ValueGeneratedOnAdd()
+                  .Metadata.SetBeforeSaveBehavior(PropertySaveBehavior.Save);
 
             entity.HasOne(d => d.Company).WithMany(p => p.ProductsCategories)
                 .HasForeignKey(d => d.CompanyId)
@@ -639,21 +704,24 @@ public partial class SELLVDBContext : DbContext
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Users__3214EC07EDA72739");
+            entity.ToTable("Users");
+            entity.HasKey(e => e.Id);
 
-            entity.Property(e => e.CreatedAt).HasColumnType("datetime");
-            entity.Property(e => e.CreatedBy).HasMaxLength(50);
-            entity.Property(e => e.Name).HasMaxLength(150);
-            entity.Property(e => e.Password).HasMaxLength(200);
-            entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
-            entity.Property(e => e.UpdatedBy).HasMaxLength(50);
-            entity.Property(e => e.Username).HasMaxLength(50);
+
+            entity.HasMany(r => r.Roles)
+            .WithMany(d => d.Users)
+            .UsingEntity<UserRole>(x => x.HasOne(x => x.Role)
+            .WithMany().HasForeignKey(x => x.RoleId),
+            x => x.HasOne(x => x.User)
+            .WithMany()
+            .HasForeignKey(x => x.UserId));
+
+            entity.HasOne(x => x.CreatedByNavigation).WithMany(x => x.UsersCreatedByNavigations).HasForeignKey(x => x.CreatedBy);
+            entity.HasOne(x => x.UpdatedByNavigation).WithMany(x => x.UsersUpdatedByNavigations).HasForeignKey(x => x.UpdatedBy);
 
             entity.HasOne(d => d.Company).WithMany(p => p.Users)
-                .HasForeignKey(d => d.CompanyId)
-                .HasConstraintName("FK__Users__CompanyId__2E1BDC42");
+                .HasForeignKey(d => d.CompanyId);
         });
-
         modelBuilder.Entity<UserRole>(entity =>
         {
             entity.HasKey(e => new { e.UserId, e.RoleId }).HasName("PK__UserRole__AF2760AD33D9B813");

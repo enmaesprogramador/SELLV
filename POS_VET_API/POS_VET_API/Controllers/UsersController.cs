@@ -16,11 +16,11 @@ namespace POS_VET_API.Controllers
             _usersServices = usersServices;
         }
         [HttpGet]
-        public ActionResult<ResultPattern<Paging<User>>> GetUsers([FromQuery]GridifyQuery query) =>
+        public ActionResult<ResultPattern<Paging<User>>> GetUsers([FromQuery] GridifyQuery query) =>
             Ok(_usersServices.GetAll(query));
 
-        [HttpPost]
-        public ActionResult<ResultPattern<User>> PostUser([FromBody] User user) =>
-            Created(string.Empty, _usersServices.Post(user));
+        [HttpGet("{id:int}")]
+        public ActionResult<ResultPattern<User>> GetUser(int id)
+            => Ok(_usersServices.Get(x => x.Id == id));
     }
 }

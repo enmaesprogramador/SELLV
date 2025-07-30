@@ -2,6 +2,7 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace POS_VET_API.DataAccess.Models;
 
@@ -20,14 +21,14 @@ public partial class UserRole
     public DateTime? UpdatedAt { get; set; }
 
     public DateTime? CreatedAt { get; set; }
-
+    [JsonIgnore]
     public virtual Company Company { get; set; }
-
+    [JsonIgnore]
     public virtual User CreatedByNavigation { get; set; }
-
+    [JsonIgnore]
     public virtual Role Role { get; set; }
-
+    [JsonIgnore]
     public virtual User UpdatedByNavigation { get; set; }
-
+    [JsonIgnore]
     public virtual User User { get; set; }
 }

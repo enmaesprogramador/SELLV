@@ -3,8 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using POS_VET_API.Auth;
 using POS_VET_API.DataAccess.Models;
 using POS_VET_API.DataAccess.Repository;
+using POS_VET_API.DataAccess.Repository.Implementations;
 using POS_VET_API.MiddleWares;
 using POS_VET_API.Swagger;
 using POS_VET_API.Utils.ResponseObject;
@@ -13,7 +15,7 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 var cors = "AllowCors";
-const string swaggerTitle = "POS_VET_API";
+const string swaggerTitle = "SELLVPOS";
  // Add services to the conainer.
 
 builder.Services.AddControllers();
@@ -22,6 +24,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<SELLVDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("connString"))
+           .EnableSensitiveDataLogging()
+           .EnableDetailedErrors()
 );
 
 var secretkey = builder.Configuration.GetSection("settings:secretkey").Value; 
@@ -63,10 +67,10 @@ builder.Services.AddCors((options) =>
          .AllowAnyHeader();
     });
 });
-
 builder.Services.AddExceptionHandler<GlobalExceptionHandlerMiddleware>();
 builder.Services.AddScoped<IUserRepository, UserRepository>()
-                .AddScoped<ICompanyRepository, CompanyRepository>();
+                .AddScoped<ICompanyRepository, CompanyRepository>()
+                .AddScoped<IUsersAuth, UsersAuth>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddProblemDetails();
 
@@ -115,7 +119,7 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new OpenApiInfo 
     { 
         Title = swaggerTitle, 
-        Version = "v1" ,
+        Version = "v1",
         Description = SwaggerSpecs.GetSwaggerSpecs()
     });
 

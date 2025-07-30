@@ -11,18 +11,17 @@ using System.Threading.Tasks;
 
 namespace POS_VET_API.Utils.ValuesGenerator
 {
-    public class UserIdGenerator : ValueGenerator<string>
+    public class UserIdGenerator : ValueGenerator<int>
     {
         public override bool GeneratesTemporaryValues =>
             false;
-        public override string Next(EntityEntry entry) =>
+        public override int Next(EntityEntry entry) =>
+            Convert.ToInt32(
             entry.Context
             .GetService<IHttpContextAccessor>()?
             .HttpContext?
             .User?
-            .FindFirst(ClaimTypes.NameIdentifier)?
-            .Value
-            ?? "System";
-
+            .FindFirst("UserId")!
+            .Value);
     }
 }

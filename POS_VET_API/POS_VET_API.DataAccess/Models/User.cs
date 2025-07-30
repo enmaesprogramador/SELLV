@@ -10,14 +10,17 @@ public partial class User
     public int Id { get; set; }
 
     public string Name { get; set; }
+    public DateTime? BirthDate { get; set; }
+    public string Phone {  get; set; }
+    public string Address { get; set; }
 
     public string Username { get; set; }
 
     public string Password { get; set; }
 
-    public string CreatedBy { get; set; }
+    public int? CreatedBy { get; set; }
 
-    public string UpdatedBy { get; set; }
+    public int? UpdatedBy { get; set; }
 
     public DateTime? CreatedAt { get; set; }
 
@@ -34,6 +37,14 @@ public partial class User
     public virtual ICollection<CashRegisterSession> CashRegisterSessionOpenedByNavigations { get; set; } = new List<CashRegisterSession>();
 
     public virtual Company Company { get; set; }
+    public virtual User CreatedByNavigation { get; set; }
+
+    public virtual ICollection<User> UsersCreatedByNavigations { get; set; } = [];
+
+    public virtual ICollection<User> UsersUpdatedByNavigations { get; set; } = [];
+    public virtual User UpdatedByNavigation { get; set; }
+    public virtual ICollection<Role> Roles { get; set; } = [];
+    public virtual ICollection<UserRole> UsersRoles { get; set; } = [];
 
     public virtual ICollection<Company> CompanyCreatedByNavigations { get; set; } = new List<Company>();
 
@@ -110,4 +121,5 @@ public partial class User
     public virtual ICollection<WareHouseTransfer> WareHousesTransferCreatedByNavigations { get; set; } = new List<WareHouseTransfer>();
 
     public virtual ICollection<WareHouseTransfer> WareHousesTransferUpdatedByNavigations { get; set; } = new List<WareHouseTransfer>();
+    
 }

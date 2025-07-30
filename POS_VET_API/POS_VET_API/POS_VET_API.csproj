@@ -10,7 +10,8 @@
   <ItemGroup>
     <PackageReference Include="Gridify" Version="2.16.3" />
     <PackageReference Include="JWT" Version="11.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.16" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.18" />
+    <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="8.0.16" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.1" />
     <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="9.0.1" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="9.0.1" />
@@ -18,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\POS_VET_API.Auth\POS_VET_API.Auth.csproj" />
     <ProjectReference Include="..\POS_VET_API.DataAccess\POS_VET_API.DataAccess.csproj" />
     <ProjectReference Include="..\POS_VET_API.Utils\POS_VET_API.Utils.csproj" />
   </ItemGroup>

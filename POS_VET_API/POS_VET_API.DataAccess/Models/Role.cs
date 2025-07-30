@@ -16,6 +16,8 @@ public partial class Role
     public virtual Company Company { get; set; }
 
     public virtual ICollection<RolePermission> RolePermissions { get; set; } = new List<RolePermission>();
+    public virtual ICollection<User> Users { get; set; } = [];
+    public virtual ICollection<UserRole> UsersRoles { get; set; } = [];
 
     public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
 }
