@@ -1,0 +1,149 @@
+﻿{
+   "CodeGenerationMode": 4,
+   "ContextClassName": "SELLVDBContext",
+   "ContextNamespace": null,
+   "FilterSchemas": false,
+   "IncludeConnectionString": false,
+   "ModelNamespace": null,
+   "OutputContextPath": null,
+   "OutputPath": "Models",
+   "PreserveCasingWithRegex": true,
+   "ProjectRootNamespace": "SELLVAPI.DataAccess",
+   "Schemas": null,
+   "SelectedHandlebarsLanguage": 2,
+   "SelectedToBeGenerated": 0,
+   "T4TemplatePath": null,
+   "Tables": [
+      {
+         "Name": "[dbo].[Barcodes]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[CashMovements]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[CashRegisters]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[CashRegisterSessions]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Companies]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Customers]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[InvoicesDetails]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[InvoicesHeaders]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Measurements]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[PaymentMethods]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Payments]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Permissions]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Products]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ProductsCategories]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ProductsSubCategories]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[RolePermission]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Roles]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Stocks]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Taxes]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[UserRoles]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Users]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[UsersTokens]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[WareHouses]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[WareHousesEntrances]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[WareHousesExits]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[WareHousesTransfers]",
+         "ObjectType": 0
+      }
+   ],
+   "UiHint": null,
+   "UncountableWords": null,
+   "UseAsyncStoredProcedureCalls": true,
+   "UseBoolPropertiesWithoutDefaultSql": false,
+   "UseDatabaseNames": true,
+   "UseDatabaseNamesForRoutines": true,
+   "UseDateOnlyTimeOnly": true,
+   "UseDbContextSplitting": false,
+   "UseDecimalDataAnnotationForSprocResult": true,
+   "UseFluentApiOnly": true,
+   "UseHandleBars": false,
+   "UseHierarchyId": false,
+   "UseInflector": true,
+   "UseInternalAccessModifiersForSprocsAndFunctions": false,
+   "UseLegacyPluralizer": false,
+   "UseManyToManyEntity": true,
+   "UseNoDefaultConstructor": false,
+   "UseNoNavigations": false,
+   "UseNoObjectFilter": false,
+   "UseNodaTime": false,
+   "UseNullableReferences": true,
+   "UsePrefixNavigationNaming": false,
+   "UseSchemaFolders": false,
+   "UseSchemaNamespaces": false,
+   "UseSpatial": false,
+   "UseT4": false,
+   "UseT4Split": false
+}
